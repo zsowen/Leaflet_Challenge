@@ -128,9 +128,10 @@ d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/
     }).addTo(tectonicplates);
 });
 
-
+//Set the position for the Legend
 var legend = L.control({position: 'bottomleft'});
 
+//Create the dictionaries of depths and colors for the legend
 legend.onAdd = function () {
     var div = L.DomUtil.create('div', 'info legend');
     var grades = [0, 10, 30, 50, 70, 90];
@@ -143,6 +144,7 @@ legend.onAdd = function () {
         "#253494"
         ];
 
+    //Run through the dictionaries to create the legend
     for (var i = 0; i <grades.length; i++) {
         div.innerHTML +=
             '<i style="background:'
@@ -154,5 +156,5 @@ legend.onAdd = function () {
 
     return div;
 }
-
+//Add the legend to Map
 legend.addTo(myMap)
