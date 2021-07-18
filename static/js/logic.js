@@ -49,3 +49,60 @@ L.control.layers(baseMaps, overlayMaps, {
     collapsed: false
 }).addTo(myMap);
 
+d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson").then(function (data) {
+    
+    function getRadius(magnitude) {
+        return Math.sqrt(magnitude) * 6;
+    }
+
+    function getColor(depth) {
+        switch (true) {
+            case depth > 90:
+                return "#253494";
+            case depth > 70:
+                return "#2c7fb8";
+            case depth > 50:
+                return "#41b6c4";
+            case depth > 30:
+                return "#7fcdbb";
+            case depth > 10:
+                return "#c7e9b4";
+            default:
+                return "#ffffcc";
+        }
+    }
+
+    function getStyle(features) {
+        return {
+            fillColor: getColor(features.geometry.coordinates[2]),
+            color: "dark blue",
+            radius: getRadius(features.properties.mag),
+            weight: 0.5,
+            stroke: true,
+            opacity: 0.9,
+            fillOpacity: 0.7
+        };
+    }
+
+
+    L.geoJSON(data, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng);
+        },
+
+        style: getStyle,
+
+        onEachFeature: function (features, layer) {
+            layer.bindPopup(
+                "Location: "
+                + features.properties.place
+                + "<br> Time: "
+                + Date(features.properties.time)
+                + "<br> Magnitude: "
+                + features.properties.mag
+                + "<br> Depth: "
+                + features.geometry.coordinates[2]
+            );
+        }
+    }).addTo(earthquake)
+});
